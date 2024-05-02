@@ -25,6 +25,8 @@ require('lazy').setup({
 
   require 'plugins.mini',
 
+  require 'plugins.markdown',
+
   require 'plugins.neo-tree',
 
   require 'plugins.telescope',
