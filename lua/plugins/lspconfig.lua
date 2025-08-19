@@ -159,7 +159,7 @@ return { -- lsp configuration & plugins
     --        for example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
     local servers = {
       -- clangd = {},
-      gopls = {},
+      -- gopls = {},
       -- pyright = {},
       -- rust_analyzer = {},
       -- ... etc. see `:help lspconfig-all` for a list of all the pre-configured lsps
@@ -170,7 +170,13 @@ return { -- lsp configuration & plugins
       -- but for many setups, the lsp (`tsserver`) will work just fine
       -- tsserver = {},
       --
-
+      jdtls = {
+        settings = {
+          format = {
+            enabled = false,
+          },
+        },
+      },
       lua_ls = {
         -- cmd = {...},
         -- filetypes = { ...},
