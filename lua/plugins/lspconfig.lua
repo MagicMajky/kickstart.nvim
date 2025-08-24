@@ -4,7 +4,8 @@ return { -- lsp configuration & plugins
     -- automatically install lsps and related tools to stdpath for neovim
     { 'williamboman/mason.nvim', config = true }, -- note: must be loaded before dependants
     'williamboman/mason-lspconfig.nvim',
-    'whoissethdaniel/mason-tool-installer.nvim',
+    'WhoIsSethDaniel/mason-tool-installer.nvim',
+    'nvim-java/nvim-java',
 
     -- useful status updates for lsp.
     -- note: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -192,7 +193,13 @@ return { -- lsp configuration & plugins
         },
       },
     }
+    require('java').setup {
+      -- Your custom jdtls settings goes here
+    }
 
+    require('lspconfig').jdtls.setup {
+      -- Your custom nvim-java configuration goes here
+    }
     -- ensure the servers and tools above are installed
     --  to check the current status of installed tools and/or manually install
     --  other tools, you can run
