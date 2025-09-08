@@ -50,3 +50,17 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+
+-- [[ Work with OS copy buffer keymaps - COPY and PASTE]]
+-- Yank/Paste to/from system clipboard with leader key
+-- In normal mode, <leader>y is an operator, waiting for a motion.
+-- E.g., <leader>yiw -> yanks inner word to system clipboard
+-- E.g., <leader>yy -> yanks current line to system clipboard
+vim.keymap.set({ 'n', 'v' }, '<leader>y', '"+y', { desc = 'Yank to system clipboard' })
+
+-- Yank the whole line to system clipboard (similar to Y)
+vim.keymap.set('n', '<leader>Y', '"+Y', { desc = 'Yank line to system clipboard' })
+
+-- Paste from system clipboard
+vim.keymap.set({ 'n', 'v' }, '<leader>p', '"+p', { desc = 'Paste from system clipboard' })
+vim.keymap.set({ 'n', 'v' }, '<leader>P', '"+P', { desc = 'Paste before from system clipboard' })

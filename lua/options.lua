@@ -17,7 +17,9 @@ vim.opt.showmode = false
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.opt.clipboard = 'unnamedplus'
+-- vim.opt.clipboard = 'unnamedplus' -- this syncs the the clipboard between neovim and OS
+-- I have custom settings to target the system buffer only after pressing leader key (<space>)
+-- this allows me to do changes in neovim and not loose the copied text
 
 -- Enable break indent
 vim.opt.breakindent = true
