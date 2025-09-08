@@ -64,3 +64,12 @@ vim.keymap.set('n', '<leader>Y', '"+Y', { desc = 'Yank line to system clipboard'
 -- Paste from system clipboard
 vim.keymap.set({ 'n', 'v' }, '<leader>p', '"+p', { desc = 'Paste from system clipboard' })
 vim.keymap.set({ 'n', 'v' }, '<leader>P', '"+P', { desc = 'Paste before from system clipboard' })
+
+-- 2. CUT (Delete/Change) to System Clipboard
+-- ---------------------------------------------------------------------------------
+-- Cut operator for normal and visual modes.
+vim.keymap.set({ 'n', 'v' }, '<leader>d', '"+d', { desc = 'Cut to system clipboard' })
+-- Change operator for normal and visual modes (cuts text and enters insert mode).
+vim.keymap.set({ 'n', 'v' }, '<leader>c', '"+c', { desc = 'Change to system clipboard' })
+-- Change to end of line and cut the text.
+vim.keymap.set('n', '<leader>C', '"+C', { desc = 'Change to EOL to system clipboard' })
