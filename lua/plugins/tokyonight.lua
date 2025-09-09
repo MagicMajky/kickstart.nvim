@@ -9,7 +9,7 @@ return { -- you can easily change to a different colorscheme.
     -- load the colorscheme here.
     -- like many other themes, this one has different styles, and you could load
     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-    vim.cmd.colorscheme 'tokyonight-night'
+    vim.cmd.colorscheme 'tokyonight-storm'
 
     -- you can configure highlights by doing something like:
     vim.cmd.hi 'comment gui=none'

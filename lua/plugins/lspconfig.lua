@@ -192,7 +192,20 @@ return { -- lsp configuration & plugins
           },
         },
       },
+      graphql = {},
+      -- graphql = {
+      --   filetypes = {
+      --     'graphql', -- we map .graphqls -> graphql in ftdetect
+      --     'typescriptreact',
+      --     'javascriptreact',
+      --     'typescript',
+      --     'javascript',
+      --   },
+      --   root_dir = require('lspconfig').util.root_pattern('graphql.config.yml', 'graphql.config.json', 'graphql.config.ts', 'graphql.config.js', '.git'),
+      --   capabilities = capabilities,
+      -- },
     }
+
     require('java').setup {
       -- Your custom jdtls settings goes here
     }
@@ -213,6 +226,7 @@ return { -- lsp configuration & plugins
     local ensure_installed = vim.tbl_keys(servers or {})
     vim.list_extend(ensure_installed, {
       'stylua', -- used to format lua code
+      'graphql-language-service-cli',
     })
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
