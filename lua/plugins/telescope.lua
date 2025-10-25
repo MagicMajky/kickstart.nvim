@@ -69,6 +69,7 @@ return { -- fuzzy finder (files, lsp, etc)
       pickers = {
         find_files = {
           hidden = true,
+          find_command = { 'rg', '--files', '--color', 'never', '--no-ignore-vcs' },
         },
       },
       extensions = {
