@@ -101,6 +101,7 @@ return { -- autocompletion
         --    https://github.com/l3mon4d3/luasnip?tab=readme-ov-file#keymaps
       },
       sources = {
+        { name = 'lazydev', group_index = 0 },
         { name = 'nvim_lsp' },
         { name = 'luasnip' },
         { name = 'path' },

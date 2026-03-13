@@ -29,12 +29,11 @@ return { -- autoformat
       lua = { 'stylua' },
       c = { 'clang-format' },
       cpp = { 'clang-format' },
-      -- conform can also run multiple formatters sequentially
-      -- python = { "isort", "black" },
-      --
-      -- you can use a sub-list to tell conform to run *until* a formatter
-      -- is found.
-      -- javascript = { { "prettierd", "prettier" } },
+      vue = { 'prettierd', 'prettier', stop_after_first = true },
+      javascript = { 'prettierd', 'prettier', stop_after_first = true },
+      typescript = { 'prettierd', 'prettier', stop_after_first = true },
+      javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+      typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
     },
   },
 }

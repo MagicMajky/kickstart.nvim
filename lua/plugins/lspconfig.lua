@@ -5,15 +5,13 @@ return { -- lsp configuration & plugins
     { 'williamboman/mason.nvim', config = true }, -- note: must be loaded before dependants
     'williamboman/mason-lspconfig.nvim',
     'WhoIsSethDaniel/mason-tool-installer.nvim',
-    'nvim-java/nvim-java',
-
     -- useful status updates for lsp.
     -- note: `opts = {}` is the same as calling `require('fidget').setup({})`
     { 'j-hui/fidget.nvim', opts = {} },
 
-    -- `neodev` configures lua lsp for your neovim config, runtime and plugins
+    -- `lazydev` configures lua lsp for your neovim config, runtime and plugins
     -- used for completion, annotations and signatures of neovim apis
-    { 'folke/neodev.nvim', opts = {} },
+    { 'folke/lazydev.nvim', ft = 'lua', opts = { library = { { path = '${3rd}/luv/library', words = { 'vim%.uv' } } } } },
   },
   config = function()
     -- brief aside: **what is lsp?**
@@ -142,105 +140,74 @@ return { -- lsp configuration & plugins
       end,
     })
 
-    -- lsp servers and clients are able to communicate to each other what features they support.
-    --  by default, neovim doesn't support everything that is in the lsp specification.
-    --  when you add nvim-cmp, luasnip, etc. neovim now has *more* capabilities.
-    --  so, we create new capabilities with nvim cmp, and then broadcast that to the servers.
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
+    -- Capabilities: extend defaults with cmp_nvim_lsp
+    local capabilities = vim.tbl_deep_extend('force', vim.lsp.protocol.make_client_capabilities(), require('cmp_nvim_lsp').default_capabilities())
 
-    -- enable the following language servers
-    --  feel free to add/remove any lsps that you want here. they will automatically be installed.
-    --
-    --  add any additional override configuration in the following tables. available keys are:
-    --  - cmd (table): override the default command used to start the server
-    --  - filetypes (table): override the default list of associated filetypes for the server
-    --  - capabilities (table): override fields in capabilities. can be used to disable certain lsp features.
-    --  - settings (table): override the default settings passed when initializing the server.
-    --        for example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
-    local servers = {
-      -- clangd = {},
-      -- gopls = {},
-      -- pyright = {},
-      -- rust_analyzer = {},
-      -- ... etc. see `:help lspconfig-all` for a list of all the pre-configured lsps
-      --
-      -- some languages (like typescript) have entire language plugins that can be useful:
-      --    https://github.com/pmizio/typescript-tools.nvim
-      --
-      -- but for many setups, the lsp (`tsserver`) will work just fine
-      -- tsserver = {},
-      --
-      jdtls = {
-        settings = {
-          format = {
-            enabled = false,
+    -- Configure LSP servers using vim.lsp.config (Neovim 0.11+ native API)
+    vim.lsp.config('lua_ls', {
+      capabilities = capabilities,
+      settings = {
+        Lua = {
+          completion = {
+            callSnippet = 'Replace',
           },
         },
       },
-      lua_ls = {
-        -- cmd = {...},
-        -- filetypes = { ...},
-        -- capabilities = {},
-        settings = {
-          lua = {
-            completion = {
-              callsnippet = 'replace',
+    })
+
+    vim.lsp.config('graphql', {
+      capabilities = capabilities,
+    })
+
+    -- Define the path to the Vue plugin installed by Mason
+    -- often ~/.local/share/nvim/mason/
+    local vue_plugin_path = vim.fn.stdpath 'data' .. '/mason/packages/vue-language-server/node_modules/@vue/language-server'
+
+    -- Configure vtsls (TypeScript server with Vue hybrid mode support)
+    vim.lsp.config('vtsls', {
+      capabilities = capabilities,
+      -- Important: 'vue' must be in the filetypes list
+      filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'vue' },
+      settings = {
+        vtsls = {
+          tsserver = {
+            globalPlugins = {
+              {
+                name = '@vue/typescript-plugin',
+                location = vue_plugin_path,
+                languages = { 'vue' },
+                configNamespace = 'typescript',
+              },
             },
-            -- you can toggle below to ignore lua_ls's noisy `missing-fields` warnings
-            -- diagnostics = { disable = { 'missing-fields' } },
           },
         },
       },
-      graphql = {},
-      -- graphql = {
-      --   filetypes = {
-      --     'graphql', -- we map .graphqls -> graphql in ftdetect
-      --     'typescriptreact',
-      --     'javascriptreact',
-      --     'typescript',
-      --     'javascript',
-      --   },
-      --   root_dir = require('lspconfig').util.root_pattern('graphql.config.yml', 'graphql.config.json', 'graphql.config.ts', 'graphql.config.js', '.git'),
-      --   capabilities = capabilities,
-      -- },
-    }
+    })
 
-    require('java').setup {
-      -- Your custom jdtls settings goes here
-    }
+    -- Configure the Vue language server (Volar)
+    vim.lsp.config('vue_ls', {
+      capabilities = capabilities,
+    })
 
-    require('lspconfig').jdtls.setup {
-      -- Your custom nvim-java configuration goes here
-    }
-    -- ensure the servers and tools above are installed
-    --  to check the current status of installed tools and/or manually install
-    --  other tools, you can run
-    --    :mason
-    --
-    --  you can press `g?` for help in this menu.
+    -- Mason: install LSP servers and tools
     require('mason').setup()
 
-    -- you can add other tools here that you want mason to install
-    -- for you, so that they are available from within neovim.
-    local ensure_installed = vim.tbl_keys(servers or {})
-    vim.list_extend(ensure_installed, {
-      'stylua', -- used to format lua code
-      'graphql-language-service-cli',
-    })
-    require('mason-tool-installer').setup { ensure_installed = ensure_installed }
-
-    require('mason-lspconfig').setup {
-      handlers = {
-        function(server_name)
-          local server = servers[server_name] or {}
-          -- this handles overriding only values explicitly passed
-          -- by the server configuration above. useful when disabling
-          -- certain features of an lsp (for example, turning off formatting for tsserver)
-          server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-          require('lspconfig')[server_name].setup(server)
-        end,
+    require('mason-tool-installer').setup {
+      ensure_installed = {
+        'lua_ls',
+        'jdtls',
+        'graphql',
+        'stylua',
+        'graphql-language-service-cli',
+        'vtsls',
+        'vue-language-server',
+        'prettierd',
       },
+    }
+
+    -- mason-lspconfig: auto-enable installed servers via vim.lsp.enable()
+    require('mason-lspconfig').setup {
+      automatic_enable = true,
     }
   end,
 }

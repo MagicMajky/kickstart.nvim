@@ -39,6 +39,8 @@ require('lazy').setup({
 
   require 'plugins.harpoon',
 
+  require 'plugins.java',
+
   require 'plugins.supermaven',
 
   -- highlight todo, notes, etc in comments
