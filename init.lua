@@ -13,6 +13,12 @@ require 'options'
 -- [[ Basic Keymaps ]]
 require 'keymaps'
 
+vim.diagnostic.config {
+  float = {
+    source = true, -- Shows source in the floating window
+  },
+}
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 require 'lazy-bootstrap'
 
